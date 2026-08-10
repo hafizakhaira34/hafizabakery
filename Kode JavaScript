@@ -1,0 +1,522 @@
+const products = [
+  {
+    id: 1,
+    name: "Croissant Butter",
+    price: 18000,
+    img: "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 2,
+    name: "Chocolate Bread",
+    price: 15000,
+    img: "https://images.pexels.com/photos/209206/pexels-photo-209206.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 3,
+    name: "Baguette",
+    price: 22000,
+    img: "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 4,
+    name: "Cinnamon Roll",
+    price: 17000,
+    img: "https://images.pexels.com/photos/1306248/pexels-photo-1306248.jpeg?auto=compress&cs=tinysrgb&w=800"
+  },
+  {
+    id: 5,
+    name: "Fresh Bun",
+    price: 14000,
+    img: "https://images.pexels.com/photos/6602821/pexels-photo-6602821.jpeg?auto=compress&cs=tinysrgb&w=800"
+  }
+];
+
+let cart = JSON.parse(
+  localStorage.getItem("hafizaCart") || "[]"
+);
+
+const $ = selector => document.querySelector(selector);
+
+const rupiah = number =>
+  new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0
+  }).format(number);
+
+
+/* =========================
+   MENAMPILKAN PRODUK
+========================= */
+
+function renderProducts(list = products) {
+
+  $("#productGrid").innerHTML = list.map(product => `
+    <article class="product">
+
+      <img
+        src="${product.img}"
+        alt="${product.name}"
+        loading="lazy"
+      >
+
+      <div class="product-body">
+
+        <h3>${product.name}</h3>
+
+        <p>
+          Freshly baked every day.
+        </p>
+
+        <div class="price">
+          ${rupiah(product.price)}
+        </div>
+
+        <button
+          class="add"
+          onclick="addToCart(${product.id})"
+        >
+          + Add to cart
+        </button>
+
+      </div>
+
+    </article>
+  `).join("");
+
+  $("#emptyState").hidden = list.length !== 0;
+}
+
+
+/* =========================
+   TAMBAH KE KERANJANG
+========================= */
+
+function addToCart(id) {
+
+  const existing = cart.find(
+    item => item.id === id
+  );
+
+  if (existing) {
+
+    existing.qty++;
+
+  } else {
+
+    cart.push({
+      id: id,
+      qty: 1
+    });
+
+  }
+
+  saveCart();
+
+  openCart();
+}
+
+
+/* =========================
+   SIMPAN KERANJANG
+========================= */
+
+function saveCart() {
+
+  localStorage.setItem(
+    "hafizaCart",
+    JSON.stringify(cart)
+  );
+
+  renderCart();
+}
+
+
+/* =========================
+   MENAMPILKAN KERANJANG
+========================= */
+
+function renderCart() {
+
+  const totalItems = cart.reduce(
+    (total, item) => total + item.qty,
+    0
+  );
+
+  $("#cartCount").textContent = totalItems;
+
+
+  if (cart.length === 0) {
+
+    $("#cartItems").innerHTML = `
+      <p class="empty">
+        Keranjang masih kosong.
+      </p>
+    `;
+
+  } else {
+
+    $("#cartItems").innerHTML = cart.map(item => {
+
+      const product = products.find(
+        p => p.id === item.id
+      );
+
+      return `
+        <div class="cart-item">
+
+          <img
+            src="${product.img}"
+            alt="${product.name}"
+          >
+
+          <div>
+
+            <h4>
+              ${product.name}
+            </h4>
+
+            <p>
+              ${rupiah(product.price)}
+            </p>
+
+            <div class="qty">
+
+              <button
+                onclick="changeQty(${product.id}, -1)"
+              >
+                −
+              </button>
+
+              <b>
+                ${item.qty}
+              </b>
+
+              <button
+                onclick="changeQty(${product.id}, 1)"
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+  }
+
+
+  const totalPrice = cart.reduce(
+    (total, item) => {
+
+      const product = products.find(
+        p => p.id === item.id
+      );
+
+      return total +
+        product.price * item.qty;
+
+    },
+    0
+  );
+
+  $("#cartTotal").textContent =
+    rupiah(totalPrice);
+}
+
+
+/* =========================
+   UBAH JUMLAH PRODUK
+========================= */
+
+function changeQty(id, amount) {
+
+  const item = cart.find(
+    product => product.id === id
+  );
+
+  if (!item) return;
+
+  item.qty += amount;
+
+
+  if (item.qty <= 0) {
+
+    cart = cart.filter(
+      product => product.id !== id
+    );
+
+  }
+
+  saveCart();
+}
+
+
+/* =========================
+   BUKA KERANJANG
+========================= */
+
+function openCart() {
+
+  $("#cartPanel")
+    .classList
+    .add("open");
+
+  $("#overlay")
+    .classList
+    .add("show");
+}
+
+
+/* =========================
+   TUTUP KERANJANG
+========================= */
+
+function closeCart() {
+
+  $("#cartPanel")
+    .classList
+    .remove("open");
+
+  $("#overlay")
+    .classList
+    .remove("show");
+}
+
+
+/* =========================
+   BUTTON KERANJANG
+========================= */
+
+$("#cartBtn").onclick = openCart;
+
+$("#closeCart").onclick = closeCart;
+
+$("#overlay").onclick = closeCart;
+
+
+/* =========================
+   SEARCH
+========================= */
+
+$("#searchBtn").onclick = () => {
+
+  const keyword =
+    $("#searchInput")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const results = products.filter(
+    product =>
+      product.name
+        .toLowerCase()
+        .includes(keyword)
+  );
+
+  renderProducts(results);
+};
+
+
+$("#searchInput").addEventListener(
+  "input",
+  () => $("#searchBtn").click()
+);
+
+
+/* =========================
+   BAHASA
+========================= */
+
+const texts = {
+
+  id: {
+
+    home: "Home",
+    menu: "Menu",
+    about: "Tentang",
+
+    eyebrow:
+      "DIBUAT DENGAN CINTA ✦ FRESH SETIAP HARI",
+
+    heroTitle:
+      "Roti hangat,<br><span>mood</span> yang lebih baik.",
+
+    heroText:
+      "Temukan roti dan kreasi bakery favoritmu. Sederhana, fresh, dan dibuat untuk menemani setiap momen.",
+
+    shopNow:
+      "Lihat Menu →",
+
+    discover:
+      "Jelajahi Hafiza",
+
+    favorites:
+      "FAVORIT KAMI",
+
+    menuTitle:
+      "Pilih roti favoritmu.",
+
+    menuSub:
+      "Freshly baked · Simple · Delicious",
+
+    aboutTitle:
+      "Dari dapur kecil,<br>untuk momen besar.",
+
+    aboutText:
+      "Hafiza Bakery adalah ruang kecil untuk pecinta roti, kue, dan dunia masak-memasak. Kami percaya makanan sederhana bisa membuat hari terasa lebih spesial.",
+
+    cartTitle:
+      "Keranjang",
+
+    total:
+      "Total",
+
+    order:
+      "Pesan via WhatsApp",
+
+    orderHint:
+      "Pesan akan dibuat otomatis dari isi keranjang.",
+
+    empty:
+      "Roti tidak ditemukan."
+
+  },
+
+
+  en: {
+
+    home: "Home",
+    menu: "Menu",
+    about: "About",
+
+    eyebrow:
+      "BAKED WITH LOVE ✦ FRESH EVERY DAY",
+
+    heroTitle:
+      "Warm bread,<br>a better <span>mood</span>.",
+
+    heroText:
+      "Discover your favorite breads and bakery creations. Simple, fresh, and made to brighten every moment.",
+
+    shopNow:
+      "View Menu →",
+
+    discover:
+      "Explore Hafiza",
+
+    favorites:
+      "OUR FAVORITES",
+
+    menuTitle:
+      "Pick your favorite bread.",
+
+    menuSub:
+      "Freshly baked · Simple · Delicious",
+
+    aboutTitle:
+      "From a small kitchen,<br>to big moments.",
+
+    aboutText:
+      "Hafiza Bakery is a little space for bread, cake, and cooking lovers. We believe simple food can make an ordinary day feel special.",
+
+    cartTitle:
+      "Cart",
+
+    total:
+      "Total",
+
+    order:
+      "Order via WhatsApp",
+
+    orderHint:
+      "Your message will be created automatically from the cart.",
+
+    empty:
+      "No bread found."
+
+  }
+
+};
+
+
+/* =========================
+   GANTI BAHASA
+========================= */
+
+$("#language").onchange = event => {
+
+  const language =
+    event.target.value;
+
+  document
+    .querySelectorAll("[data-i18n]")
+    .forEach(element => {
+
+      element.innerHTML =
+        texts[language][
+          element.dataset.i18n
+        ];
+
+    });
+
+};
+
+
+/* =========================
+   PESAN WHATSAPP
+========================= */
+
+$("#orderBtn").onclick = () => {
+
+  if (cart.length === 0) {
+
+    alert(
+      "Keranjang masih kosong."
+    );
+
+    return;
+  }
+
+
+  let message =
+    "Halo kak aku mau pesan:";
+
+
+  cart.forEach(item => {
+
+    const product =
+      products.find(
+        p => p.id === item.id
+      );
+
+    message +=
+      `\n${item.qty} ${product.name}`;
+
+  });
+
+
+  const whatsappURL =
+    "https://wa.me/?text=" +
+    encodeURIComponent(message);
+
+
+  window.open(
+    whatsappURL,
+    "_blank"
+  );
+
+};
+
+
+/* =========================
+   JALANKAN WEBSITE
+========================= */
+
+renderProducts();
+
+renderCart();
