@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hafiza Bakery | Freshly Baked</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <a class="logo" href="#home"><span>H</span><strong>Hafiza</strong> Bakery</a>
+  <nav class="nav-links">
+    <a href="#home" data-i18n="navHome">Home</a>
+    <a href="#menu" data-i18n="navMenu">Menu</a>
+    <a href="#about" data-i18n="navAbout">Tentang</a>
+  </nav>
+  <div class="nav-actions">
+    <div class="search-box">
+      <input id="searchInput" type="search" placeholder="Cari roti..." aria-label="Cari roti">
+      <button id="searchBtn" aria-label="Cari">⌕</button>
+    </div>
+    <select id="language" aria-label="Pilih bahasa">
+      <option value="id">ID</option>
+      <option value="en">EN</option>
+    </select>
+    <button id="cartBtn" class="cart-button" aria-label="Buka keranjang">🛒 <span id="cartCount">0</span></button>
+  </div>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-content">
+    <div class="badge" data-i18n="badge">FRESHLY BAKED ✦ SETIAP HARI</div>
+    <h1 data-i18n="heroTitle">Roti hangat,<br><span>mood</span> lebih baik.</h1>
+    <p data-i18n="heroText">Nikmati roti fresh dan kreasi bakery pilihan Hafiza. Sederhana, lezat, dan cocok untuk menemani hari kamu.</p>
+    <div class="hero-buttons">
+      <a class="btn primary" href="#menu" data-i18n="heroButton">Lihat Menu →</a>
+      <a class="btn secondary" href="#about" data-i18n="aboutButton">Tentang Kami</a>
+    </div>
+    <div class="mini-stats">
+      <div><strong>5+</strong><span data-i18n="stat1">Pilihan Roti</span></div>
+      <div><strong>100%</strong><span data-i18n="stat2">Fresh Baked</span></div>
+      <div><strong>♥</strong><span data-i18n="stat3">Dibuat Dengan Cinta</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="yellow-shape"></div>
+    <div class="blue-circle"></div>
+    <img src="https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg?auto=compress&cs=tinysrgb&w=1000" alt="Roti fresh Hafiza Bakery">
+    <div class="fresh-card"><span>🥐</span><div><strong>Fresh!</strong><small data-i18n="freshText">Dipanggang setiap pagi</small></div></div>
+  </div>
+</section>
+
+<section id="menu" class="menu-section">
+  <div class="section-title">
+    <div><div class="eyebrow" data-i18n="eyebrow">FAVORIT KAMI</div><h2 data-i18n="menuTitle">Pilih roti favoritmu.</h2></div>
+    <p data-i18n="menuSubtitle">Freshly baked · Simple · Delicious</p>
+  </div>
+  <div id="productGrid" class="product-grid"></div>
+  <div id="emptyState" class="empty-state" hidden data-i18n="empty">Roti tidak ditemukan.</div>
+</section>
+
+<section class="recipe-banner">
+  <div>
+    <div class="eyebrow">HAFIZA KITCHEN</div>
+    <h2 data-i18n="recipeTitle">Bukan cuma bakery.<br>Tempat berbagi rasa.</h2>
+    <p data-i18n="recipeText">Temukan inspirasi kue, roti, dan dunia masak-memasak dalam satu tempat.</p>
+  </div>
+  <div class="recipe-icon">🍰</div>
+</section>
+
+<section id="about" class="about-section">
+  <div class="about-card">
+    <div class="eyebrow">HAFIZA BAKERY</div>
+    <h2 data-i18n="aboutTitle">Dari dapur kecil,<br>untuk momen besar.</h2>
+    <p data-i18n="aboutText">Hafiza Bakery hadir untuk pecinta roti, kue, dan memasak. Kami percaya makanan sederhana bisa membuat hari terasa lebih spesial.</p>
+  </div>
+  <div class="about-points">
+    <div><span>01</span><strong data-i18n="point1">Fresh setiap hari</strong></div>
+    <div><span>02</span><strong data-i18n="point2">Bahan pilihan</strong></div>
+    <div><span>03</span><strong data-i18n="point3">Dibuat dengan cinta</strong></div>
+  </div>
+</section>
+</main>
+
+<aside id="cartPanel" class="cart-panel">
+  <div class="cart-header">
+    <div><span class="eyebrow">HAFIZA</span><h3 data-i18n="cartTitle">Keranjang</h3></div>
+    <button id="closeCart" class="close-btn">×</button>
+  </div>
+  <div id="cartItems" class="cart-items"></div>
+  <div class="cart-footer">
+    <div class="total-row"><span data-i18n="total">Total</span><strong id="cartTotal">Rp0</strong></div>
+    <button id="orderBtn" class="btn primary full" data-i18n="order">Pesan via WhatsApp</button>
+    <small data-i18n="orderHint">Pesanan akan dibuat otomatis dari isi keranjang.</small>
+  </div>
+</aside>
+
+<div id="overlay" class="overlay"></div>
+<footer><strong>Hafiza Bakery</strong> · <span data-i18n="footer">Freshly baked with love.</span></footer>
+
+<script src="script.js"></script>
+</body>
+</html>
